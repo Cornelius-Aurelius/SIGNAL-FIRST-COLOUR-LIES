@@ -24,6 +24,9 @@ button{font:inherit;border:0;color:var(--text);cursor:pointer}button:disabled{op
 .mobile-mini-guide{display:none;border-radius:18px;padding:8px 10px;text-align:center;font-size:13px;font-weight:1000;color:#eaf2ff;background:rgba(0,0,0,.28);border:1px solid rgba(80,240,175,.24)}.mobile-mini-guide b{color:var(--good);text-transform:uppercase;letter-spacing:.05em}
 @media(max-width:960px){.app{padding:calc(6px + var(--safeTop)) 6px calc(6px + var(--safeBottom))}.game-screen{gap:6px}.hud{grid-template-columns:1fr auto auto!important;gap:6px!important;border-radius:18px!important;padding:7px!important}.hud .target-wrap{gap:8px}.hud-stat{min-width:62px!important;padding:8px 7px!important}.hud-stat:nth-of-type(4),.hud-stat:nth-of-type(5){display:none!important}.target-command{font-size:10px!important;margin-top:0}.target-label{font-size:22px!important;line-height:1!important}.target-explain{font-size:11px!important;line-height:1.15!important}.rule-strip{display:none!important}.play-guide{display:none!important}.mobile-mini-guide{display:block}.layout{flex:1 1 auto;min-height:0}.arena-wrap{min-height:48vh!important;border-radius:22px!important}.arena-mission{top:8px!important;width:calc(100% - 16px)!important;grid-template-columns:58px 1fr!important;padding:8px 9px!important;border-radius:17px!important}.arena-mission .mission-preview{width:54px!important;height:46px!important;border-radius:14px!important;border-width:3px!important}.arena-mission .mission-kicker{font-size:10px!important}.arena-mission .mission-title{font-size:20px!important;line-height:1!important}.arena-mission .mission-help{font-size:11px!important;margin-top:3px!important}.arena-hint{display:none!important}.object{width:78px!important;height:64px!important;border-radius:16px!important;border-width:3px!important}.big-number{font-size:27px!important}.glyph{font-size:19px!important}.badge{width:22px!important;height:22px!important;font-size:12px!important}.object-word{font-size:10px!important}.tools{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}.tool{min-height:48px!important;border-radius:16px!important;font-size:16px!important}.tool span{display:none!important}.panel{display:none!important}.menu-card,.modal-card{padding:18px}.hero{grid-template-columns:1fr!important}}
 @media(min-width:961px){.arena-wrap{min-height:0}.arena-mission{top:14px}.object{width:112px;height:88px}.layout{grid-template-columns:220px 1fr 260px}}
+.simple-card .object-word{display:none}.simple-card .big-number{font-size:34px!important}.cue-name{font-size:17px;font-weight:1000;letter-spacing:.02em;text-transform:uppercase;line-height:1;text-align:center;text-shadow:0 3px 12px rgba(0,0,0,.42)}.cue-sub{font-size:10px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.78);margin-top:5px}.object{justify-content:center!important}.arena-mission{max-width:560px}.arena-mission .mission-title{text-transform:none}.arena-mission .mission-help{max-width:430px}.mission-preview .big-number{font-size:34px!important}.mission-preview .cue-name{font-size:13px}
+@media(max-width:960px){.hud{min-height:96px!important}.target-wrap{align-items:center!important}.target-explain{display:none!important}.target-help{display:none!important}.rule-strip{display:none!important}.mobile-mini-guide{display:block!important;padding:7px 8px!important;font-size:12px!important}.arena-wrap{min-height:52vh!important}.arena-mission{top:8px!important;grid-template-columns:54px 1fr!important;gap:10px!important;padding:9px 10px!important;border-radius:18px!important;background:rgba(0,0,0,.78)!important}.arena-mission .mission-preview{width:50px!important;height:44px!important}.arena-mission .mission-kicker{font-size:9px!important;letter-spacing:.14em!important}.arena-mission .mission-title{font-size:24px!important;line-height:.95!important}.arena-mission .mission-help{font-size:11px!important;line-height:1.15!important}.object{width:86px!important;height:70px!important;border-radius:18px!important}.cue-name{font-size:13px!important}.cue-sub{font-size:9px!important}.object .big-number{font-size:34px!important}.badge{width:20px!important;height:20px!important;font-size:11px!important}.tools{position:relative;z-index:20}.tool{font-size:20px!important;font-weight:1000!important}.tool.quit{font-size:16px!important}.phase-card{font-size:14px!important;max-width:92%;padding:14px 16px!important}.target-label{font-size:19px!important}.target-command{display:none!important}.signal-box{width:54px!important;height:48px!important}}
+@media(min-width:961px){.arena-mission{top:18px}.arena{padding-top:110px}.object{width:118px;height:92px}.cue-name{font-size:18px}.object .big-number{font-size:38px!important}}
 </style>
 </head>
 <body>
@@ -77,7 +80,58 @@ function renderRules(){const l=game.levelData;$('#threats').innerHTML=[`Level: $
 function coach(){const l=game.levelData;$('#coach').innerHTML=`<div class="list-item how-card"><b>YOUR JOB</b><br>Find: ${shortCue(l)}<br><span style="color:var(--muted)">${targetExplain(l)}</span></div><div class="list-item danger-card"><b>DO NOT TAP</b><br>Anything without ${shortCue(l)}.</div><div class="list-item">Mission ${game.hits+1}/${game.goal}. The cue changes after every correct tap.</div>`}
 function begin(){game.started=performance.now();last=performance.now();spawnMissionObjects();raf=requestAnimationFrame(loop)}
 function spawnMissionObjects(){const arena=$('#arena');arena.innerHTML='';game.objects=[];const count=window.innerWidth<=960?Math.min(game.levelData.objects,5):game.levelData.objects;for(let i=0;i<count;i++)spawnObject(i)}
-function spawnObject(i){const arena=$('#arena'),r=arena.getBoundingClientRect(),l=game.levelData;const correct=i<Math.max(1,Math.floor(l.objects*.36));const sig=makeObjectSignal(correct);const el=document.createElement('button');el.type='button';el.className=`object texture-${sig.pattern} border-${sig.border}`;if(sig.trap==='panic')el.classList.add('panic');if(sig.trap==='shadow')el.classList.add('shadow');if(sig.trap==='glow')el.classList.add('glow');const colourKey=correct?l.pair[0]:(sig.trap==='colour'?l.pair[0]:l.pair[1]);el.style.color=colours[colourKey]||'#fff';el.style.borderColor=sig.trap==='colour'?colours[l.pair[0]]:'rgba(255,255,255,.62)';el.innerHTML=`<span class="badge ${sig.badge}">${sig.number}</span><span class="big-number">${sig.number}</span><span class="glyph">${shapes.find(x=>x.id===sig.shape)?.g||'●'}</span><span class="object-word">${sig.trap==='word'?pick(words):'SIGNAL'}</span>`;const w=112,h=88,x=rand(14,Math.max(20,r.width-w-14)),y=rand(118,Math.max(140,r.height-h-14));const speed=l.speed;const obj={el,correct,sig,x,y,vx:speed?rand(-speed,speed):0,vy:speed?rand(-speed*.75,speed*.75):0};el.style.left=x+'px';el.style.top=y+'px';el.addEventListener('pointerdown',()=>tap(obj));arena.appendChild(el);game.objects.push(obj)}
+function spawnObject(i){
+  const arena=$('#arena'),r=arena.getBoundingClientRect(),l=game.levelData;
+  const correct=i<Math.max(1,Math.floor(l.objects*.36));
+  const sig=makeObjectSignal(correct);
+  const el=document.createElement('button');
+  el.type='button';
+  el.className=`object simple-card texture-${sig.pattern} border-${sig.border}`;
+  if(sig.trap==='panic')el.classList.add('panic');
+  if(sig.trap==='shadow')el.classList.add('shadow');
+  if(sig.trap==='glow')el.classList.add('glow');
+  const colourKey=correct?l.pair[0]:(sig.trap==='colour'?l.pair[0]:l.pair[1]);
+  el.style.color=colours[colourKey]||'#fff';
+  el.style.borderColor=sig.trap==='colour'?colours[l.pair[0]]:'rgba(255,255,255,.70)';
+  el.innerHTML=cardHTML(sig,l);
+  const mobile=window.innerWidth<=960;
+  const w=mobile?86:118,h=mobile?70:92;
+  const pos=findOpenCardPosition(r,w,h);
+  const speed=l.speed;
+  const obj={el,correct,sig,x:pos.x,y:pos.y,vx:speed?rand(-speed,speed):0,vy:speed?rand(-speed*.75,speed*.75):0};
+  el.style.left=obj.x+'px';
+  el.style.top=obj.y+'px';
+  el.addEventListener('pointerdown',()=>tap(obj));
+  arena.appendChild(el);
+  game.objects.push(obj);
+}
+function cardHTML(sig,l){
+  const k=l.keys.length===1?l.keys[0]:'combo';
+  if(k==='number')return `<span class="big-number">${sig.number}</span><span class="cue-sub">NUMBER</span>`;
+  if(k==='pattern')return `<span class="cue-name">${title(sig.pattern)}</span><span class="cue-sub">PATTERN</span>`;
+  if(k==='border')return `<span class="cue-name">${title(sig.border)}</span><span class="cue-sub">BORDER</span>`;
+  if(k==='shape')return `<span class="glyph" style="font-size:36px">${shapes.find(x=>x.id===sig.shape)?.g||'●'}</span><span class="cue-sub">${title(sig.shape)}</span>`;
+  if(k==='badge')return `<span class="badge ${sig.badge}">${sig.number}</span><span class="cue-name" style="font-size:13px">${badgeName(sig.badge)}</span><span class="cue-sub">BADGE</span>`;
+  return `<span class="badge ${sig.badge}">${sig.number}</span><span class="big-number">${sig.number}</span><span class="cue-name" style="font-size:12px">${title(sig.pattern)}</span>`;
+}
+function findOpenCardPosition(r,w,h){
+  const mobile=window.innerWidth<=960;
+  const top=mobile?132:142;
+  const minDist=mobile?104:142;
+  for(let tries=0;tries<90;tries++){
+    const x=rand(16,Math.max(22,r.width-w-16));
+    const y=rand(top,Math.max(top+20,r.height-h-16));
+    let ok=true;
+    for(const o of game.objects){
+      const dx=(o.x+w/2)-(x+w/2),dy=(o.y+h/2)-(y+h/2);
+      if(Math.hypot(dx,dy)<minDist){ok=false;break}
+    }
+    if(ok)return{x,y};
+  }
+  const cols=mobile?3:5;
+  const row=Math.floor(game.objects.length/cols),col=game.objects.length%cols;
+  return {x:18+col*((r.width-w-36)/Math.max(1,cols-1)),y:top+row*(h+18)};
+}
 function makeObjectSignal(correct){const l=game.levelData,t=structuredClone(l.target);if(correct){t.trap='clean';return t}const sig=structuredClone(t),trap=pick(l.traps);sig.trap=trap;const wrongKey=trap==='colour'||trap==='word'||trap==='panic'||trap==='shadow'||trap==='glow'?pick(l.keys):trap;if(wrongKey==='number')sig.number=pick([1,2,3,4,5,6,7,8,9].filter(x=>x!==t.number));if(wrongKey==='pattern')sig.pattern=pick(patterns.filter(x=>x!==t.pattern));if(wrongKey==='border')sig.border=pick(borders.filter(x=>x!==t.border));if(wrongKey==='shape')sig.shape=pick(shapes.map(x=>x.id).filter(x=>x!==t.shape));if(wrongKey==='badge')sig.badge=pick(badges.filter(x=>x!==t.badge));return sig}
 function loop(now){if(!game||game.paused)return;const dt=Math.min(50,now-last);last=now;game.elapsed=(now-game.started-game.totalPaused)/1000;game.timeLeft=Math.max(0,game.time-game.elapsed);updateObjects(dt*(now<game.slowUntil?.35:1),now<game.freezeUntil);updateHud();if(game.timeLeft<=0||game.lives<=0)finish(false);else raf=requestAnimationFrame(loop)}
 function updateObjects(dt,frozen){const r=$('#arena').getBoundingClientRect();for(const o of game.objects){if(frozen||game.levelData.speed===0)continue;o.x+=o.vx*dt/1000;o.y+=o.vy*dt/1000;if(o.x<6){o.x=6;o.vx=Math.abs(o.vx)}if(o.x>r.width-o.el.offsetWidth-6){o.x=r.width-o.el.offsetWidth-6;o.vx=-Math.abs(o.vx)}if(o.y<48){o.y=48;o.vy=Math.abs(o.vy)}if(o.y>r.height-o.el.offsetHeight-6){o.y=r.height-o.el.offsetHeight-6;o.vy=-Math.abs(o.vy)}o.el.style.left=o.x+'px';o.el.style.top=o.y+'px'}revealState()}
